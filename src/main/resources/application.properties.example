@@ -1,0 +1,58 @@
+spring.application.name=backend
+
+# ========================================
+# Configuración de Base de Datos
+# ========================================
+# IMPORTANTE: Este es un archivo de EJEMPLO
+# Copia este archivo como 'application.properties' o 'application-local.properties'
+# y configura tus credenciales locales
+
+# --- PostgreSQL Configuration ---
+spring.datasource.url=jdbc:postgresql://localhost:5432/YOUR_DATABASE_NAME
+spring.datasource.username=YOUR_USERNAME
+spring.datasource.password=YOUR_PASSWORD
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# --- SQL Server Configuration (Alternativa) ---
+# Descomenta estas líneas si usas SQL Server en lugar de PostgreSQL
+# spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=YOUR_DATABASE_NAME;encrypt=true;trustServerCertificate=true
+# spring.datasource.username=YOUR_USERNAME
+# spring.datasource.password=YOUR_PASSWORD
+# spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+# ========================================
+# Configuración de JPA / Hibernate
+# ========================================
+
+# Dialecto de base de datos (PostgreSQL)
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+
+# Dialecto de base de datos (SQL Server) - Descomenta si usas SQL Server
+# spring.jpa.database-platform=org.hibernate.dialect.SQLServerDialect
+
+# Estrategia de generación de esquema
+# Opciones: none, validate, update, create, create-drop
+spring.jpa.hibernate.ddl-auto=update
+
+# Mostrar consultas SQL en consola (útil para desarrollo)
+spring.jpa.show-sql=true
+
+# Formatear SQL en consola
+spring.jpa.properties.hibernate.format_sql=true
+
+# ========================================
+# Configuración del Servidor
+# ========================================
+server.port=8080
+
+# ========================================
+# Configuración de CORS (si es necesario)
+# ========================================
+# cors.allowed-origins=http://localhost:4200
+
+# ========================================
+# Configuración de Logging
+# ========================================
+# logging.level.root=INFO
+# logging.level.backend.com.backend=DEBUG
+# logging.file.name=logs/application.log

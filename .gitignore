@@ -31,3 +31,173 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### ========================================= ###
+### CONFIGURACIONES SENSIBLES Y LOCALES     ###
+### ========================================= ###
+
+# Archivos de configuración con credenciales
+application-local.properties
+application-dev.properties
+application-prod.properties
+**/application-*.properties
+!**/application.properties.example
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Archivos de configuración específicos del desarrollador
+config/local/
+*.local.yml
+*.local.yaml
+
+### ========================================= ###
+### BASE DE DATOS                            ###
+### ========================================= ###
+
+# Archivos de base de datos embebida (H2, SQLite, Derby)
+*.db
+*.sqlite
+*.sqlite3
+*.h2.db
+*.mv.db
+*.trace.db
+
+# Dumps y backups de base de datos
+*.sql
+*.dump
+*.backup
+/db/dumps/
+/database/backups/
+/backups/
+
+# Migraciones locales (si usas Flyway o Liquibase)
+/src/main/resources/db/migration/local/
+/src/main/resources/db/changelog/local/
+**/migration/local/
+**/changelog/local/
+
+# Scripts de datos de prueba locales
+/src/main/resources/data/
+/src/test/resources/data/
+test-data.sql
+seed-data.sql
+local-data.sql
+
+### ========================================= ###
+### LOGS Y ARCHIVOS TEMPORALES              ###
+### ========================================= ###
+
+# Logs de aplicación
+logs/
+*.log
+*.log.*
+/log/
+application.log
+spring.log
+error.log
+debug.log
+
+# Archivos temporales
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Archivos de caché
+.cache/
+*.cache
+
+### ========================================= ###
+### ARCHIVOS SUBIDOS POR USUARIOS           ###
+### ========================================= ###
+
+# Directorios de uploads/archivos
+/uploads/
+/files/
+/media/
+/static/uploads/
+/public/uploads/
+/src/main/resources/static/uploads/
+/src/main/resources/static/files/
+
+# Imágenes y documentos subidos
+*.uploaded
+/images/uploaded/
+/documents/uploaded/
+
+### ========================================= ###
+### CERTIFICADOS Y CLAVES                   ###
+### ========================================= ###
+
+# Certificados SSL/TLS
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.truststore
+
+# Claves API y tokens
+secrets.properties
+api-keys.properties
+*.secret
+
+### ========================================= ###
+### REPORTES Y DOCUMENTACIÓN GENERADA       ###
+### ========================================= ###
+
+# Reportes de cobertura
+/coverage/
+/test-results/
+*.exec
+*.ser
+
+# Documentación generada
+/generated-docs/
+/api-docs/
+
+# Archivos de análisis de código
+.sonar/
+sonar-project.properties
+
+### ========================================= ###
+### DOCKER Y CONTENEDORES                   ###
+### ========================================= ###
+
+# Datos de volúmenes Docker locales
+/docker/data/
+/docker/volumes/
+docker-compose.override.yml
+.dockerignore.local
+
+### ========================================= ###
+### OTROS                                    ###
+### ========================================= ###
+
+# Archivos de sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# Archivos de respaldo de editores
+*~
+*.bak
+*.orig
+
+# Node modules (si usas herramientas frontend en el backend)
+node_modules/
+package-lock.json
+yarn.lock
