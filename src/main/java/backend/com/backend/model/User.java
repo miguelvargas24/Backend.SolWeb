@@ -1,6 +1,8 @@
 package backend.com.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +29,8 @@ public class User {
     private String password;
     private Boolean active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id")
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Profile profile;
 }

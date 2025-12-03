@@ -16,10 +16,13 @@ public class ProfileService {
     @Autowired
     private ProfileRepository profileRepository;
 
+    @Transactional(readOnly = true)
     public List<Profile> findAll() {
+        // Solo devuelve perfiles sin cargar permisos (más rápido)
         return profileRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Profile> findById(Long id) {
         return profileRepository.findById(id);
     }

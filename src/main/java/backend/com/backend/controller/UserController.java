@@ -28,20 +28,22 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@org.springframework.web.bind.annotation.PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @org.springframework.web.bind.annotation.PostMapping
-    public User createUser(@org.springframework.web.bind.annotation.RequestBody User user) {
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        // Ensure ID is null for new entities to avoid OptimisticLockingFailureException
+        user.setIdUser(null);
         return userService.save(user);
     }
 
-    @org.springframework.web.bind.annotation.PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@org.springframework.web.bind.annotation.PathVariable Long id,
-            @org.springframework.web.bind.annotation.RequestBody User userDetails) {
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id,
+            @RequestBody User userDetails) {
         return userService.findById(id)
                 .map(existingUser -> {
                     existingUser.setName(userDetails.getName());
@@ -54,8 +56,8 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @org.springframework.web.bind.annotation.DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@org.springframework.web.bind.annotation.PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (userService.findById(id).isPresent()) {
             userService.deleteById(id);
             return ResponseEntity.ok().build();
