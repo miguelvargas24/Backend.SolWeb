@@ -29,7 +29,7 @@ public class DataLoader {
 
                         List<ProfilePermission> permissions = new ArrayList<>();
 
-                        // Dashboard
+                        // Dashboardddd
                         permissions.add(createPermission("Dashboard", true, true, true, true, profile));
 
                         // Seguridad
