@@ -1,5 +1,6 @@
 package backend.com.backend.controller;
 
+import backend.com.backend.dto.DonationRequest;
 import backend.com.backend.model.Donation;
 import backend.com.backend.model.DonationDetail;
 import backend.com.backend.service.DonationService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/donations")
@@ -81,11 +83,14 @@ public class DonationController {
     }
 
     @PostMapping
-    public ResponseEntity<Donation> createDonation(@RequestBody Donation donation) {
+    public ResponseEntity<?> createDonation(@RequestBody DonationRequest request) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(donationService.createDonation(donation));
+            System.out.println("Recibiendo donación: " + request);
+            Donation donation = donationService.createDonation(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(donation);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("error", "Bad Request", "message", e.getMessage()));
         }
     }
 

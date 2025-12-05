@@ -27,6 +27,11 @@ public class UserService {
                 .filter(user -> user.getPassword().equals(password));
     }
 
+    @Transactional(readOnly = true)
+    public java.util.Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -34,6 +39,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public java.util.Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.List<User> getAllUsersList() {
+        return userRepository.findAll();
     }
 
     public void deleteById(Long id) {

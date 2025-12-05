@@ -1,5 +1,6 @@
 package backend.com.backend.service;
 
+import backend.com.backend.dto.DonationRequest;
 import backend.com.backend.model.*;
 import backend.com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +61,81 @@ public class DonationService {
 
     public Page<Donation> getDonationsByStatus(Donation.DonationStatus status, Pageable pageable) {
         return donationRepository.findByStatus(status, pageable);
+    }
+
+    /**
+     * Crear donación desde DTO (usado por el frontend)
+     */
+    public Donation createDonation(DonationRequest request) {
+        System.out.println("=== Creando donación ===");
+        System.out.println("Request: " + request);
+        System.out.println("Usuario recibido (receivedBy): " + request.getReceivedBy());
+
+        // Validar y cargar relaciones
+        Donor donor = donorRepository.findById(request.getDonor())
+                .orElseThrow(() -> new RuntimeException("Donante no encontrado con id: " + request.getDonor()));
+
+        System.out.println("Verificando si existe usuario con ID: " + request.getReceivedBy());
+        System.out.println("Total de usuarios en DB: " + userRepository.count());
+
+        // Listar todos los IDs de usuarios existentes para debugging
+        userRepository.findAll().forEach(u -> System.out.println(
+                "Usuario en DB - ID: " + u.getIdUser() + ", Email: " + u.getEmail() + ", Nombre: " + u.getName()));
+
+        User receivedBy = userRepository.findById(request.getReceivedBy())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + request.getReceivedBy()
+                        + ". Los usuarios disponibles tienen IDs diferentes. Verifique que el usuario existe en la base de datos."));
+
+        System.out.println("Donante encontrado: " + donor.getBusinessName());
+        System.out.println("Usuario encontrado: " + receivedBy.getName() + " (ID: " + receivedBy.getIdUser() + ")");
+
+        // Crear entidad Donation
+        Donation donation = new Donation();
+        donation.setDonationCode(generateDonationCode());
+        donation.setDonor(donor);
+        donation.setReceivedBy(receivedBy);
+        donation.setDonationDate(request.getDonationDate());
+        donation.setObservations(request.getObservations());
+        donation.setStatus(Donation.DonationStatus.RECEIVED);
+
+        // Guardar donación
+        Donation savedDonation = donationRepository.save(donation);
+
+        // Procesar detalles y actualizar inventario
+        List<DonationDetail> details = new ArrayList<>();
+        for (DonationRequest.DonationDetailRequest detailRequest : request.getDetails()) {
+            FoodItem foodItem = foodItemRepository.findById(detailRequest.getFoodItem())
+                    .orElseThrow(
+                            () -> new RuntimeException("Food item not found with id: " + detailRequest.getFoodItem()));
+
+            DonationDetail detail = new DonationDetail();
+            detail.setDonation(savedDonation);
+            detail.setFoodItem(foodItem);
+            detail.setQuantity(BigDecimal.valueOf(detailRequest.getQuantity()));
+            detail.setBatchNumber(detailRequest.getBatchNumber());
+            detail.setExpirationDate(detailRequest.getExpirationDate());
+            detail.setObservations(detailRequest.getObservations());
+
+            DonationDetail savedDetail = donationDetailRepository.save(detail);
+            details.add(savedDetail);
+
+            // Actualizar inventario (SUMA)
+            Inventory inventory = new Inventory();
+            inventory.setFoodItem(foodItem);
+            inventory.setBatchNumber(detail.getBatchNumber());
+            inventory.setCurrentQuantity(detail.getQuantity());
+            inventory.setInitialQuantity(detail.getQuantity());
+            inventory.setExpirationDate(detail.getExpirationDate());
+            inventory.setEntryDate(donation.getDonationDate());
+            inventory.setLastMovementDate(LocalDateTime.now());
+            inventory.setDonor(donor);
+            inventory.setActive(true);
+
+            inventoryService.addStock(inventory);
+        }
+
+        savedDonation.setDetails(details);
+        return savedDonation;
     }
 
     /**
